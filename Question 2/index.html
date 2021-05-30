@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Question 2</title>
+    <style>
+      .container {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      #tbData {
+        margin-top: 16px;
+        align-self: center;
+        width: 600px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <h2>Search Categories</h2>
+        <input
+          type="text"
+          id="txtFilter"
+          placeholder="Search..."
+          onkeyup="onFilterChange()"
+        />
+      </div>
+      <table id="tbData"></table>
+    </div>
+  </body>
+</html>
+<script>
+  let datas = []
+
+  const fetchData = async () => {
+    const result = await fetch('https://api.publicapis.org/categories')
+    const resultJson = await result.json()
+
+    datas = resultJson
+  }
+
+  const onFilterChange = async () => {
+    const filter = document.getElementById('txtFilter').value
+    const filteredData = filterData(filter)
+
+    renderData(filteredData)
+  }
+
+  const filterData = (filter) => {
+    if (filter.length === 0) {
+      return datas
+    }
+    return datas.filter((data) => data.toLowerCase().indexOf(filter) >= 0)
+  }
+
+  const renderData = (rawData) => {
+    const table = document.getElementById('tbData')
+    table.innerHTML = ''
+    console.info(rawData)
+    let thead = table.createTHead()
+    let header = thead.insertRow()
+    let th = document.createElement('th')
+    let text = document.createTextNode('Categories')
+    th.appendChild(text)
+    header.appendChild(th)
+    for (let data of rawData) {
+      let row = table.insertRow()
+      let cell = row.insertCell()
+      let text = document.createTextNode(data)
+      cell.appendChild(text)
+    }
+  }
+
+  fetchData().then(()=>{
+    onFilterChange()
+  })
+</script>
