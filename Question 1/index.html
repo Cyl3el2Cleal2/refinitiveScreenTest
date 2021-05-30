@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Q 1</title>
+    <style>
+      .container {
+        height: 100vh;
+        display: flex;
+        flex-direction: row;
+      }
+      .first-col {
+        min-width: 200px;
+        width: 200px;
+        height: 100%;
+      }
+      .mid-col {
+        flex-grow: 1;
+        min-width: 100px;
+        height: 100%;
+      }
+      .last-col {
+        min-width: 300px;
+        width: 300px;
+        height: 100%;
+      }
+
+      @media screen and (max-width: 600px) {
+        .container {
+          overflow-x: scroll;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="first-col">
+        <input
+          id="number"
+          type="number"
+          onkeypress="submitNumber(event)"
+          onblur="leaveFocusNumber()"
+        />
+      </div>
+      <div class="mid-col">
+        <select name="type" id="type" onchange="calculateNumber()">
+          <option value="prime" selected>isPrime</option>
+          <option value="fibo">isFibonacci</option>
+        </select>
+      </div>
+      <div class="last-col">
+        <span id="result"></span>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  const numberEle = document.getElementById('number')
+
+  const typeOption = document.getElementById('type')
+
+  const result = document.getElementById('result')
+
+  function submitNumber(e) {
+    if (e.keyCode == 13) {
+      // console.log(number.value, 'enter')
+      calculateNumber()
+    }
+  }
+
+  function leaveFocusNumber() {
+    if (numberEle.value) {
+      processNumber()
+      calculateNumber()
+    }
+  }
+
+  function processNumber() {
+    const number = numberEle.value
+    let float_numer = parseFloat(number)
+    if (float_numer < 0) {
+      float_numer = 1
+    }
+    const new_number = Math.round(float_numer)
+    // console.log(new_number)
+    numberEle.value = new_number
+  }
+
+  function calculateNumber() {
+    const calType = typeOption.value
+
+    const number = parseInt(numberEle.value)
+
+    let calResult
+    if (calType === 'prime') {
+      calResult = isPrime(number)
+    }
+
+    if (calType === 'fibo') {
+      calResult = isFibonacci(number)
+    }
+
+    if (calResult) {
+      result.innerText = 'true'
+    } else {
+      result.innerText = 'false'
+    }
+  }
+
+  function isPrime(number) {
+    for (let i = 2, s = Math.sqrt(number); i <= s; i++) {
+      if (number % i === 0) return false
+    }
+
+    return number > 1
+  }
+
+  function isFibonacci(query, count = 1, last = 0) {
+    if (count < query) {
+      return isFibonacci(query, count + last, count)
+    }
+    if (count === query) {
+      return true
+    }
+    return false
+  }
+</script>
